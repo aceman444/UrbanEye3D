@@ -133,29 +133,42 @@ public class DialogWindow3D extends ToggleDialog
 
     @Override
     public void primitivesAdded(PrimitivesAddedEvent event) {
-        updateData();
+        if (this.isUpdateRequired() ) {
+            scene3d.primitivesAdded(event);
+            renderer3D.repaint();
+        }
     }
 
     @Override
     public void primitivesRemoved(PrimitivesRemovedEvent event) {
-        updateData();
+        if (this.isUpdateRequired() ) {
+            scene3d.primitivesRemoved(event);
+            renderer3D.repaint();
+        }
     }
 
     @Override
     public void tagsChanged(TagsChangedEvent event) {
-        updateData();
+        if (this.isUpdateRequired() ) {
+            scene3d.tagsChanged(event);
+            renderer3D.repaint();
+        }
     }
 
     @Override
     public void nodeMoved(NodeMovedEvent event) {
-       //System.out.println("Event: nodeMoved");
-        updateData();
-
+        if (this.isUpdateRequired() ) {
+            scene3d.nodeMoved(event);
+            renderer3D.repaint();
+        }
     }
 
     @Override
     public void wayNodesChanged(WayNodesChangedEvent event) {
-        updateData();
+        if (this.isUpdateRequired() ) {
+            scene3d.wayNodesChanged(event);
+            renderer3D.repaint();
+        }
     }
 
     @Override
