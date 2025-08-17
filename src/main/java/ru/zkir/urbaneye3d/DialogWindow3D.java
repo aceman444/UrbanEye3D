@@ -111,12 +111,15 @@ public class DialogWindow3D extends ToggleDialog
             //it seems that if 3d window is minimized or closed this is not necessary to update data.
             return;
         }
-
+        long startTime = System.nanoTime(); // <--- START
         if (listenedLayer != null) {
             scene3d.updateData(listenedLayer.getDataSet());
         } else {
             scene3d.updateData(null);
         }
+        long endTime = System.nanoTime(); // <--- END
+        long durationMs = (endTime - startTime) / 1_000_000;
+        System.out.println("--- GEOMETRY UPDATE TIME: " + durationMs + " ms ---");
         renderer3D.repaint();
     }
 
@@ -173,12 +176,19 @@ public class DialogWindow3D extends ToggleDialog
 
     @Override
     public void relationMembersChanged(RelationMembersChangedEvent event) {
+        System.out.println("Event: relationMembersChanged" + event.getType());
         updateData();
     }
 
     @Override
     public void otherDatasetChange(AbstractDatasetChangedEvent event) {
-        //System.out.println("Event: otherDatasetChange");
+
+        if (event.getType() == AbstractDatasetChangedEvent.DatasetEventType.PRIMITIVE_FLAGS_CHANGED){
+            // we do not know for sure what this primitive flags are,
+            // but it seems it does not require full update.
+            return;
+        }
+        System.out.println("Event: otherDatasetChange" + event.getType());
         updateData();
     }
 

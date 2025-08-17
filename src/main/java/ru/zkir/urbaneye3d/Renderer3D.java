@@ -28,6 +28,8 @@ public class Renderer3D extends GLJPanel implements GLEventListener {
     private final List<RenderableBuildingElement> buildings;
     private final GLU glu = new GLU();
     public boolean isWireframeMode;
+    private long frameCount = 0;
+    private long totalFrameTime = 0;
 
     private double camX_angle = 35; //this is rather Z-angle (in vertical plane)
     private double camY_angle = -90; // x and y mixed, but it is not a problem yet.
@@ -140,6 +142,7 @@ public class Renderer3D extends GLJPanel implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
+        long startTime = System.nanoTime(); // <--- START
         GL2 gl = glAutoDrawable.getGL().getGL2();
 
         isWireframeMode = Config.getPref().getBoolean("urbaneye3d.wireframe.enabled", false);
@@ -195,6 +198,17 @@ public class Renderer3D extends GLJPanel implements GLEventListener {
             gl.glPopMatrix();
         }
         gl.glFlush();
+        long endTime = System.nanoTime(); // <--- END
+        totalFrameTime += (endTime - startTime);
+        frameCount++;
+
+        if (frameCount == 100) {
+            long averageTimeNs = totalFrameTime / 100;
+            long averageTimeMs = averageTimeNs / 1_000_000;
+            System.out.println("Average Render Time (100 frames): " + averageTimeMs + " ms");
+            frameCount = 0;
+            totalFrameTime = 0;
+        }
     }
 
 
